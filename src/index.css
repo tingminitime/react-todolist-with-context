@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body {
+    @apply bg-gray-900;
+    font-family: Inter, 'Noto Sans TC', 'sans-serif';
+    color: white;
+  }
+
+  input {
+    @apply text-gray-900;
+  }
+}
