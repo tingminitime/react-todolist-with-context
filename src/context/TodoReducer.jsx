@@ -3,6 +3,7 @@ export const initState = {
 }
 
 export const ACTIONS = {
+  INIT_TODO: 'INIT_TODO',
   ADD_TODO: 'ADD_TODO',
   TOGGLE_TODO: 'TOGGLE_TODO',
   UPDATE_TODO: 'UPDATE_TODO',
@@ -16,6 +17,11 @@ const TodoReducer = (state, action) => {
 
   // CRUD 邏輯集中在 TodoContext
   switch (type) {
+    case ACTIONS.INIT_TODO:
+      return {
+        ...state,
+        todoList: payload.todoList,
+      }
     case ACTIONS.ADD_TODO:
       return {
         ...state,

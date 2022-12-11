@@ -1,17 +1,18 @@
 import { useContext, useEffect, useRef, useState } from 'react'
 // import { TodoContext } from '@/context/TodoContext'
 import useTodo from '@/hooks/useTodoContext'
+import useClickOutside from '@/hooks/useClickOutside'
 
 const TodoItem = ({ todoItem }) => {
   console.log('[TodoItem rerender]')
   // const { toggleTodo, deleteTodo } = useContext(TodoContext)
   const { toggleTodo, updateTodo, deleteTodo } = useTodo()
   const editRef = useRef(null)
+  const editConfirmRef = useRef(null)
   const [showEditInput, setShowEditInput] = useState(false)
 
   const onEditInputConfirm = e => {
-    console.log(e)
-    if (e.keyCode !== 13 && e.target.dataset.btnInfo !== 'editConfirm') return
+    if (e.keyCode !== 13 && !editConfirmRef?.current?.contains(e.target)) return
 
     if (!editRef.current.value.trim()) {
       alert('請輸入編輯待辦事項內容')
@@ -24,12 +25,28 @@ const TodoItem = ({ todoItem }) => {
     setShowEditInput(false)
   }
 
+  const handleClickOutside = e => {
+    if (
+      !editConfirmRef?.current?.contains(e.target) &&
+      !editRef?.current?.contains(e.target)
+    ) {
+      setShowEditInput(false)
+    }
+  }
+
   useEffect(() => {
     console.log('[useEffect]showEditInput')
     if (editRef.current) {
       editRef.current.value = todoItem.todoContent
     }
   }, [showEditInput])
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside)
+    return () => {
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [])
 
   return (
     <div className="flex flex-col mb-3">
@@ -49,7 +66,6 @@ const TodoItem = ({ todoItem }) => {
             ref={editRef}
             autoFocus
             onKeyDown={onEditInputConfirm}
-            onBlur={() => setShowEditInput(false)}
           />
         )}
       </div>
@@ -75,7 +91,7 @@ const TodoItem = ({ todoItem }) => {
           <button
             type="button"
             className="px-2 py-1 rounded bg-blue-500 hover:bg-blue-600"
-            data-btn-info="editConfirm"
+            ref={editConfirmRef}
             onClick={onEditInputConfirm}
           >
             Confirm

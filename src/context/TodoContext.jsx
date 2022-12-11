@@ -16,6 +16,15 @@ const addTodoItem = todoContent => {
 export const TodoProvider = ({ children }) => {
   const [state, dispatch] = useReducer(TodoReducer, initState)
 
+  const initTodo = () => {
+    dispatch({
+      type: ACTIONS.INIT_TODO,
+      payload: {
+        todoList: JSON.parse(localStorage.getItem('state')),
+      },
+    })
+  }
+
   // 新增 TodoItem
   const addTodo = todoContent => {
     const todoItem = addTodoItem(todoContent)
@@ -81,7 +90,9 @@ export const TodoProvider = ({ children }) => {
 
   // 被 TodoProvider 包住的元件可以使用 values 的東西
   const values = {
+    initState,
     todoList: state.todoList,
+    initTodo,
     addTodo,
     toggleTodo,
     updateTodo,

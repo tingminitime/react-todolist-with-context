@@ -1,11 +1,24 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { TodoContext } from '@/context/TodoContext'
 import TodoForm from '@/components/TodoForm'
 import TodoItem from '@/components/TodoItem'
 
 const TodoList = () => {
   console.log('[TodoList rerender]')
-  const { todoList } = useContext(TodoContext)
+  const { initState, todoList, initTodo } = useContext(TodoContext)
+
+  useEffect(() => {
+    if (JSON.parse(localStorage.getItem('state'))) {
+      initTodo()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (todoList !== initState) {
+      console.log('[TodoList useEffect]setItem')
+      localStorage.setItem('state', JSON.stringify(todoList))
+    }
+  }, [todoList])
 
   return (
     <div className="py-4 flex flex-col place-items-center gap-2">
